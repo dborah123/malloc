@@ -10,9 +10,9 @@ malloc(size_t size)
 {
     Node *start = get_start();
 
-    void *open_space = get_next_open_mem(start, size);
+    Node *open_space = create_new_node(start, size);
 
-    return NULL;
+    return (void*) open_space;
 }
 
 void
@@ -60,31 +60,36 @@ increase_size()
     return program_break;
 }
 
-void *
-get_next_open_mem(Node *node, size_t size)
+Node *
+create_new_node(Node *curr_node, size_t size)
 {
     // ITERATE THRU NODES
 
-    // If node->next == NULL -> add_new_block
-    if (node->next == NULL) {
-        return create_new_node(node, size);
+    // If this is the last node, create a node at the end
+    if (curr_node->next == NULL)
+    {
+        return create_at_end(curr_node, size);
     }
 
-    // If node->next - node > size needed -> Insert block here
+    // If there is room in between nodes
+    if (curr_node->next - curr_node > get_total_needed(size))
+    {
+        return insert(curr_node, get_data_end(curr_node, size));
+    }
 
     // else get_next_open_mem(curr_node->next, size)
-
-    return NULL;
+    return create_new_node(curr_node->next, size);
 }
 
 Node *
-create_new_node(Node *prev_node, size_t size)
+create_at_end(Node *curr_node, size_t size)
 {
     Node *new_node_start;
-    Node *next_open_place = get_data_end(prev_node, size);
+    Node *next_open_place = get_data_end(curr_node, size);
 
     size_t size_needed = get_total_needed(size);
 
+    // If the size needed goes beyond the page break, extend it
     if (next_open_place + size_needed > (Node*)sbrk(0))
     {
         new_node_start = add_new_block();
@@ -94,7 +99,7 @@ create_new_node(Node *prev_node, size_t size)
         new_node_start = next_open_place;
     }
 
-    return NULL;
+    return insert(curr_node, new_node_start);
 }
 
 

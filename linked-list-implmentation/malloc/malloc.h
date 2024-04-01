@@ -31,9 +31,9 @@ __uint8_t *increase_size();
  */
 Node *get_start();
 
-void *get_next_open_mem(Node *starting_node, size_t size);
+Node *create_new_node(Node *curr_node, size_t size);
 
-Node *create_new_node(Node *prev_node, size_t size);
+Node *create_at_end(Node *curr_node, size_t size);
 
 
 // === MACROS ===

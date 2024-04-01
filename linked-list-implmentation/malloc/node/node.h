@@ -10,6 +10,7 @@ struct Node {
 /* Node Helper Functions */
 Node *get_next();
 Node *get_end();
+Node *insert(Node *curr_node, Node *node_to_insert);
 
 /* Constants */
 #define NODE_SIZE sizeof(Node)
